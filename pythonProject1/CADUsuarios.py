@@ -1,0 +1,140 @@
+from tkinter import *
+
+from usuarios import *
+
+class CADusuario:
+    def __init__(self,master=None):
+        self.Modelofont = ("Arial", 15)
+        self.widget1 = Frame(master).pack()
+        self.Cabecalio = Label(self.widget1,text='Informe os dados',font=('Arial',25,'bold'))
+        self.Cabecalio.pack()
+
+        self.widget2 = Frame(master)
+        self.widget2.pack()
+        self.IdUsuLabel = Label(self.widget2,text='IdUsuário: ',font=self.Modelofont)
+        self.IdUsuLabel.pack(side=LEFT)
+        self.IdUsu = Entry(self.widget2,font=self.Modelofont, width=16)
+        self.IdUsu.pack(side=LEFT)
+        self.Buscar = Button(self.widget2,text='Buscar',font=self.Modelofont,width=10,command=self.buscarUsuario)
+        self.Buscar.pack(side=LEFT)
+
+        self.widget3 = Frame(master)
+        self.widget3.pack()
+        self.Nomelabel = Label(self.widget3,text='Nome: ',font=self.Modelofont)
+        self.Nomelabel.pack(side=LEFT)
+        self.Nome = Entry(self.widget3,font=self.Modelofont,width=30)
+        self.Nome.pack(side=LEFT)
+
+        self.widget4 = Frame(master)
+        self.widget4.pack()
+        self.Telelabel = Label(self.widget4, text='Telefone: ', font=self.Modelofont)
+        self.Telelabel.pack(side=LEFT)
+        self.Tele = Entry(self.widget4, font=self.Modelofont, width=28)
+        self.Tele.pack(side=LEFT)
+
+        self.widget5 = Frame(master)
+        self.widget5.pack()
+        self.Emaillabel = Label(self.widget5, text='E-mail: ', font=self.Modelofont)
+        self.Emaillabel.pack(side=LEFT)
+        self.Email = Entry(self.widget5, font=self.Modelofont, width=30)
+        self.Email.pack(side=LEFT)
+
+        self.widget6 = Frame(master)
+        self.widget6.pack()
+        self.Usuariolabel = Label(self.widget6, text='Usuário: ', font=self.Modelofont)
+        self.Usuariolabel.pack(side=LEFT)
+        self.Usuario = Entry(self.widget6, font=self.Modelofont, width=29)
+        self.Usuario.pack(side=LEFT)
+
+        self.widget7 = Frame(master)
+        self.widget7.pack()
+        self.senhalabel = Label(self.widget7, text='Senha: ', font=self.Modelofont)
+        self.senhalabel.pack(side=LEFT)
+        self.senha = Entry(self.widget7, font=self.Modelofont, width=30,show='*')
+        self.senha.pack(side=LEFT)
+
+        self.widget8 = Frame(master)
+        self.widget8.pack()
+        self.inserir = Button(self.widget8,text='Inserir',font=self.Modelofont,width=10,command=self.inserirUsuario)
+        self.inserir.pack(side=LEFT)
+        self.alterar = Button(self.widget8,text='Alterar',font=self.Modelofont,width=10,command=self.alterarUsuario)
+        self.alterar.pack(side=LEFT)
+        self.excluit = Button(self.widget8,text='Excluir',font=self.Modelofont,width=10,command=self.excluirUsuario)
+        self.excluit.pack(side=LEFT)
+        self.fechar = Button(self.widget8,text='Fechar', font=self.Modelofont, width=10, command=self.widget8.quit)
+        self.fechar.pack(side=LEFT)
+
+        self.widget9 = Frame(master)
+        self.widget9.pack()
+        self.msg = Label(self.widget9,text='',font=self.Modelofont)
+        self.msg.pack()
+
+    def buscarUsuario(self):
+        user = AplicacaoUSU()
+        idusuario = self.IdUsu.get()
+        print(idusuario)
+        self.msg["text"] = user.selectUser(idusuario)
+        self.IdUsu.delete(0, END)
+        self.IdUsu.insert(INSERT, user.idusuario)
+        self.Nome.delete(0, END)
+        self.Nome.insert(INSERT, user.nome)
+        self.Tele.delete(0, END)
+        self.Tele.insert(INSERT, user.telefone)
+        self.Email.delete(0, END)
+        self.Email.insert(INSERT, user.email)
+        self.Usuario.delete(0, END)
+        self.Usuario.insert(INSERT, user.usuario)
+        self.senha.delete(0, END)
+        self.senha.insert(INSERT, user.senha)
+
+    def inserirUsuario(self):
+        user = AplicacaoUSU()
+        user.nome = self.Nome.get()
+        user.telefone = self.Tele.get()
+        user.email = self.Email.get()
+        user.usuario = self.Usuario.get()
+        user.senha = self.senha.get()
+        self.msg["text"] = user.insertUser()
+        self.Usuario.delete(0, END)
+        self.Nome.delete(0, END)
+        self.Tele.delete(0, END)
+        self.Email.delete(0, END)
+        self.Usuario.delete(0, END)
+        self.senha.delete(0, END)
+
+
+    def alterarUsuario(self):
+        user = AplicacaoUSU()
+        user.idusuario = self.IdUsu.get()
+        user.nome = self.Nome.get()
+        user.telefone = self.Tele.get()
+        user.email = self.Email.get()
+        user.usuario = self.Usuario.get()
+        user.senha = self.senha.get()
+        self.msg["text"] = user.updateUser()
+        self.Usuario.delete(0, END)
+        self.Nome.delete(0, END)
+        self.Tele.delete(0, END)
+        self.Email.delete(0, END)
+        self.Usuario.delete(0, END)
+        self.senha.delete(0, END)
+
+
+    def excluirUsuario(self):
+        user = AplicacaoUSU()
+        user.idusuario = self.IdUsu.get()
+        self.msg["text"] = user.deleteUser()
+        self.Usuario.delete(0, END)
+        self.Nome.delete(0, END)
+        self.Tele.delete(0, END)
+        self.Email.delete(0, END)
+        self.Usuario.delete(0, END)
+        self.senha.delete(0, END)
+
+
+root = Tk()
+CADusuario(root)
+root.state('zoomed')
+root.title('Cadastro')
+root.mainloop()
+
