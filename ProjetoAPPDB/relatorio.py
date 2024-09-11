@@ -3,6 +3,7 @@ from tkinter import filedialog, messagebox
 from fpdf import FPDF
 from tkinter import ttk
 from Banco import Banco
+import os
 
 
 class relatorio:
@@ -31,7 +32,7 @@ class relatorio:
         self.janela3.pack()
         self.texto = tk.Label(self.janela3, text="Conteúdo do Relatório")
         self.texto.pack()
-        self.conteudo_text = tk.Text(self.janela3, height=15, width=50,)
+        self.conteudo_text = tk.Text(self.janela3, height=20, width=90,)
         self.conteudo_text.pack()
 
         self.janela4 = tk.Frame(master)
@@ -39,7 +40,17 @@ class relatorio:
         self.gerar_btn = tk.Button(self.janela4, text="Gerar PDF", command=self.gerar_pdf)
         self.gerar_btn.pack(pady=10, side=tk.LEFT)
         self.sair_btn = tk.Button(self.janela4, text="Voltar", command=self.voltarmenu)
-        self.sair_btn.pack()
+        self.sair_btn.pack(side=tk.LEFT)
+
+        self.janela5 = tk.Frame(master)
+        self.janela5.pack()
+        self.PDF_combobox = ttk.Combobox(self.janela5, width=27)
+        self.PDF_combobox.pack()
+        self.LerAquivoPDF()
+        self.VisuPDF = tk.Button(self.janela5, text="Abrir", command=self.visualizar_PDF)
+        self.VisuPDF.pack()
+
+
     def Buscar(self):
         tipo = self.arquivos_combobox.get()
         if tipo == 'Usuarios':
@@ -47,19 +58,27 @@ class relatorio:
             c = banco.conexao.cursor()
             c.execute("SELECT * FROM tbl_usuarios")
             lista = c.fetchall()
+            self.conteudo_text.delete(1.0, tk.END)
+            for i in lista:
+                self.conteudo_text.insert(tk.INSERT, f'ID: {i[0]}, Nome: {i[1]}, Telefone: {i[2]}, Email: {i[3]}, Usuario: {i[4]}\n')
         elif tipo == 'Cidades':
             banco = Banco()
             c = banco.conexao.cursor()
             c.execute("SELECT * FROM tbl_cidades")
             lista = c.fetchall()
+            self.conteudo_text.delete(1.0, tk.END)
+            for i in lista:
+                self.conteudo_text.insert(tk.INSERT, f'ID: {i[0]}, Nome: {i[1]}, UF: {i[2]}\n')
         else:
             banco = Banco()
             c = banco.conexao.cursor()
             c.execute("SELECT * FROM tbl_clientes")
             lista = c.fetchall()
-        self.conteudo_text.delete(1.0,tk.END)
-        for i in lista:
-            self.conteudo_text.insert(tk.INSERT, f'{i}\n')
+            self.conteudo_text.delete(1.0, tk.END)
+            for i in lista:
+                self.conteudo_text.insert(tk.INSERT, f'ID: {i[0]}, Nome: {i[1]}, Cidade: {i[2]}, Nascimento: {i[3]}, CPF: {i[4]}, Gênero: {i[5]}\n')
+
+
 
     def gerar_pdf(self):
         # Coletar o texto do campo de entrada
@@ -85,6 +104,23 @@ class relatorio:
             pdf.output(file_path)
             messagebox.showinfo("Sucesso", "Relatório salvo com sucesso!")
 
+    def LerAquivoPDF(self):
+        path = 'Relatorios_salvos'
+        dirs = os.listdir(path)
+        self.PDF_combobox['values'] = dirs
+
+    def visualizar_PDF(self):
+        dirs = self.PDF_combobox.get()
+        os.startfile(f'Relatorios_salvos\\{dirs}')
+
     def voltarmenu(self):
         self.master.destroy()
+
+
+# Abre o arquivo pdf
+# lembre-se que para o windows você deve usar essa barra -> /
+# lembre-se também que você precisa colocar o caminho absoluto
+
+
+
 
